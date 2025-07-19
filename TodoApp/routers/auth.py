@@ -107,29 +107,3 @@ async def login_for_access_token(
         )
     token = create_access_token(user.username, user.id, user.role, timedelta(minutes=20))
     return {'access_token': token, 'token_type': 'bearer'}
-
-
-@router.get("/get_user", status_code=status.HTTP_200_OK)
-async def get_user(
-    user: Annotated[dict, Depends(get_current_user)]
-):
-    return user
-
-
-@router.post("/change_password", status_code=status.HTTP_200_OK)
-async def change_password(
-    user: Annotated[dict, Depends(get_current_user)],
-    new_password: str,
-    db: db_dependency,
-):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication failed")
-    
-    user_model = db.query(Users).filter(Users.id == user['id']).first()
-    if not user_model:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    user_model.hashed_password = bcrypt_context.hash(new_password)
-    db.commit()
-    
-    return {"message": "Password changed successfully"}
