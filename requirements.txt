@@ -22,3 +22,4 @@ pymysql
 alembic
 pytest
 httpx
+pytest-asyncio
