@@ -21,7 +21,9 @@ before_script:
 test:
   stage: test
   script:
-    - pytest
+    - source .venv/bin/activate
+    - pytest --junitxml=report.xml -v
+  timeout: 30m
   artifacts:
     reports:
       junit: report.xml
